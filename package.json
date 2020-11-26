@@ -4,7 +4,8 @@
   "description": "Represents a BibTeX entry. Provides an interface to build the entry, validate and stringify it.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "lab -t 100",
+    "coverage": "lab -r html -o coverage.html"
   },
   "keywords": [
     "bibtex",

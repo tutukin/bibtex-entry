@@ -145,5 +145,17 @@ module.exports = {
      *  should consist of four numerals, such as 1984, although the standard styles can handle
      * any year whose last four nonpunctuation characters are numerals, such as ‘(about 1984)’.
      */
-    year: 'year'
+    year: 'year',
+
+    /**
+     * Normalizes the field name. Returns `undefined` for an unknown field.
+     * @param {string} name the field name.
+     * @returns {string} the normalized field name, or undefined for an unknown field.
+     */
+    $normalize(name) {
+        name = name.toLowerCase();
+        return !!this[name] ?
+            name :
+            undefined;
+    }
 };
