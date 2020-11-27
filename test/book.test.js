@@ -118,6 +118,21 @@ describe('addFields', () => {
     });
 });
 
+describe('json serialization', () => {
+    it('serializes to JSON', () => {
+        const entry = getValidEntry();
+        const json = entry.toJson();
+        const expectedJson = getValidEntryAsJson(); 
+        expect(JSON.parse(json)).equals(JSON.parse(expectedJson));
+    });
+
+    it('deserializes from JSON', () => {
+        const json = getValidEntryAsJson();
+        const entry = Entry.fromJson(json).toString();
+        expect(entry).equals(getValidEntryAsBibTeX());
+
+    });
+})
 function getValidEntry() {
     var entry = new Entry(TYPE.book);
     entry.setKey('entryKey');
@@ -131,4 +146,15 @@ function getValidEntryAsBibTeX() {
     publisher = "publisher",
     title = "title",
     year = "year")`;
+}
+
+function getValidEntryAsJson() {
+    return JSON.stringify({
+        $type: 'book',
+        $id: 'entryKey',
+        author: 'author',
+        publisher: 'publisher',
+        title: 'title',
+        year: 'year'
+    });
 }

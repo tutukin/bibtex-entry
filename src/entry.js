@@ -20,6 +20,22 @@ module.exports = class Entry {
     }
 
     /**
+     * Creates an entry from its JSON representation.
+     * @param {string} json the JSON string created with the
+     *      `toJson()` method.
+     * @returns {Entry} the entry.
+     */
+    static fromJson(json) {
+        var obj = JSON.parse(json);
+        var entry = new Entry(obj.$type);
+        entry.setKey(obj.$id);
+        for (let fieldName of Object.keys(obj).filter(n => !n.startsWith('$'))) {
+            entry.addField(fieldName, obj[fieldName]);
+        }
+        return entry;
+    }
+
+    /**
      * Adds specified fields to the entry.
      * @param  {...string} fields the fields. When the number of arguments
      * is odd, then the first argument is the entry key. When the number
@@ -42,7 +58,7 @@ module.exports = class Entry {
      * @throws {Error} for an undefined or an invalid field.
      */
     addField(fieldName, value) {
-        fieldName = this.#getNormalizedFieldName(fieldName);
+        fieldName = this._getNormalizedFieldName(fieldName);
         this.#fields[fieldName] = value;
     }
 
@@ -52,15 +68,15 @@ module.exports = class Entry {
      * @throws {Error} for an undefined or an invalid field.
      */
     getField(fieldName) {
-        fieldName = this.#getNormalizedFieldName(fieldName);
+        fieldName = this._getNormalizedFieldName(fieldName);
         return this.#fields[fieldName];
     }
 
     /**
      * Returns an iterator over pairs [name, value].
      */
-    *fields() {
-        for (let pair of Object.entries(this.#fields)) {
+    *fields() { // FIXME: may it be `get *fields()` ?
+        for (let pair of Object.entries(this.#fields).sort((a, b) => a[0] - b[0])) {
             yield pair;
         }
     }
@@ -108,6 +124,24 @@ ${fields.join(',\n')})`;
     }
 
     /**
+     * Converts the entry to JSON.
+     * @returns {string} the JSON representation of the entry.
+     */
+    toJson() {
+        const obj = {
+            $type: this.#type,
+            $id: this.getKey()
+        };
+
+        for (let [name, value] of this.fields())
+        {
+            obj[name] = value;
+        }
+
+        return JSON.stringify(obj);
+    }
+
+    /**
      * Validates the entry.
      * @returns {string[]} the array of validation errors or an empty array
      * for a valid entry.
@@ -133,7 +167,7 @@ ${fields.join(',\n')})`;
         return errors;
     }
 
-    #getNormalizedFieldName(fieldName) {
+    _getNormalizedFieldName(fieldName) {
         const normalizedFieldName = FIELD.$normalize(fieldName);
 
         if (!normalizedFieldName) {
