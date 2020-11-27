@@ -1,11 +1,12 @@
 {
   "name": "bibtex-entry",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Represents a BibTeX entry. Provides an interface to build the entry, validate and stringify it.",
   "main": "src/index.js",
   "scripts": {
     "test": "lab -t 100",
-    "coverage": "lab -r html -o coverage.html"
+    "coverage": "lab -r html -o coverage.html",
+    "release": "standard-version"
   },
   "keywords": [
     "bibtex",
@@ -15,6 +16,7 @@
   "license": "ISC",
   "devDependencies": {
     "@hapi/code": "^8.0.2",
-    "@hapi/lab": "^24.1.0"
+    "@hapi/lab": "^24.1.0",
+    "standard-version": "^9.0.0"
   }
 }
